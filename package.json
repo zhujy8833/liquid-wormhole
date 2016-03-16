@@ -1,7 +1,7 @@
 {
   "name": "liquid-wormhole",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "1.0.0",
+  "description": "Wormholes with the power of Liquid Fire",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -11,11 +11,11 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "",
+  "repository": "https://github.com/pzuraq/liquid-wormhole",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Christopher Garrett <cmg@pzuraq.co>",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.2.0",
@@ -43,9 +43,13 @@
     "ember-addon"
   ],
   "dependencies": {
+    "ember-cli-htmlbars": "^1.0.1",
     "ember-cli-babel": "^5.1.5"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "after": [
+      "liquid-fire"
+    ]
   }
 }
