@@ -1,6 +1,6 @@
 export function initialize(instance) {
   let liquidTargetContainer;
-  
+
   if (instance.lookup) {
     liquidTargetContainer = instance.lookup('component:liquid-target-container');
   } else {
