@@ -1,26 +1,26 @@
-# Liquid-wormhole
+[![Build Status](https://travis-ci.org/pzuraq/liquid-wormhole.svg?branch=master)](https://travis-ci.org/pzuraq/liquid-wormhole)
 
-This README outlines the details of collaborating on this Ember addon.
+# Liquid Wormhole
+
+Liquid Wormhole combines the ideas behind
+[Ember Wormhole](https://github.com/yapplabs/ember-wormhole.git) with the power of
+[Liquid Fire](http://ef4.github.io/liquid-fire/) to provide an accessible,
+easy-to-use toolkit for both animating UI elements "above" your templates.
+
+Interactive documentation can be found
+[here](http://pzuraq.github.io/liquid-wormhole/).
+
+## Ember Compatibility
+
+Liquid Wormhole is tested on all versions of Ember >= 1.13. Long term support will
+continue for 1.13 and up for as long Ember core support continues.
 
 ## Installation
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+```
+ember install liquid-tether
+```
 
-## Running
+## Contributing
 
-* `ember server`
-* Visit your app at http://localhost:4200.
-
-## Running Tests
-
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+Fork the repository, make your changes on a branch, and submit a pull request.
