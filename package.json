@@ -1,0 +1,11 @@
+{
+  "dependencies": {},
+  "fastboot": {
+    "moduleWhitelist": [],
+    "manifest": {
+      "appFile": "fastboot/dummy-3a87ed777232c440ac7442510ce5529c.js",
+      "vendorFile": "fastboot/vendor-491eea46178182255c93975ead97a5fc.js",
+      "htmlFile": "index.html"
+    }
+  }
+}
