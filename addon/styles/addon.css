@@ -13,3 +13,7 @@
 .liquid-wormhole-container {
   display: none;
 }
+
+.liquid-target > .liquid-child {
+  overflow: visible;
+}

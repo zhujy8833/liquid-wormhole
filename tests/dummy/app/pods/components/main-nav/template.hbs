@@ -1,0 +1,28 @@
+<div class="nav-container">
+  <div class="row">
+    <h1 class="nav-title col-xs-6 col-sm-12">
+      Liquid Wormhole
+    </h1>
+    <div class="col-xs-6 text-right visible-xs">
+      <a class="nav-button nav-svg {{if navOpen 'active'}}" {{action "toggleNav"}}>{{svg-icon.hamburger}}</a>
+    </div>
+  </div>
+</div>
+<div class="nav-menu {{if navOpen 'nav-open'}}">
+  {{link-to 'Introduction' 'index' class="nav-item"}}
+
+  {{link-to 'The Basics' 'basics' class="nav-item"}}
+  <div class="hidden-xs">
+    {{link-to 'Parameters' 'basics' (query-params a="parameters") class="nav-item sub-nav-item "}}
+    {{link-to 'What Are Targets' 'basics' (query-params a="targets") class="nav-item sub-nav-item"}}
+    {{link-to 'Transitions' 'basics' (query-params a="transitions") class="nav-item sub-nav-item"}}
+    {{link-to 'DOM Structure and Styles' 'basics' (query-params a="dom-structure-and-styles") class="nav-item sub-nav-item"}}
+    {{link-to 'Ember Compatibility' 'basics' (query-params a="ember-compatibility") class="nav-item sub-nav-item"}}
+  </div>
+
+  {{link-to 'Examples' 'examples' class="nav-item"}}
+
+  <a class="nav-item nav-svg" href="https://github.com/pzuraq/liquid-wormhole">
+    GitHub {{svg-icon.github}}
+  </a>
+</div>

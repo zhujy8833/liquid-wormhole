@@ -2,11 +2,20 @@
 /* global require, module */
 var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
-module.exports = function(defaults) {
-  var app = new EmberAddon(defaults, {
-    // Add options here
+module.exports = function() {
+  var app = new EmberAddon({
+    snippetPaths: ['tests/dummy/snippets'],
+    snippetSearchPaths: ['app', 'tests/dummy/app', 'addon'],
+    sassOptions: {
+      includePaths: [
+        'bower_components/bootstrap-sass/assets/stylesheets',
+        'bower_components/flat-ui-sass/vendor/assets/stylesheets'
+      ],
+      extension: 'scss'
+    }
   });
 
+  app.import('vendor/sinon.js', { type: 'test'});
   /*
     This build file specifies the options for the dummy test app of this
     addon, located in `/tests/dummy`
