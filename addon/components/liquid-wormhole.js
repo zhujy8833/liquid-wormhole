@@ -27,16 +27,18 @@ const LiquidWormhole = Ember.Component.extend({
 
   didInsertElement() {
     const parentWormhole = this.nearestOfType(LiquidWormhole);
+    const childWormholes = this.get('childWormholes');
     const liquidTargetService = this.get('liquidTargetService');
 
-    if (parentWormhole) {
+    this._target = this.get('liquidTarget');
+
+    if (parentWormhole && parentWormhole._state !== 'inDOM') {
       parentWormhole.get('childWormholes').unshiftObject(this);
+      parentWormhole.get('childWormholes').unshiftObjects(childWormholes);
     } else {
-      this._target = this.get('liquidTarget');
-
       liquidTargetService.appendItem(this._target, this);
-
-      this.get('childWormholes').forEach((wormhole) => liquidTargetService.appendItem(wormhole._target, wormhole));
+      
+      childWormholes.forEach((wormhole) => liquidTargetService.appendItem(wormhole._target, wormhole));
     }
 
     this._super.apply(this, arguments);
