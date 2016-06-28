@@ -1,11 +1,11 @@
 import Ember from 'ember';
 
-const { computed, inject, observer } = Ember;
+const { A, computed, inject, observer, run } = Ember;
 
 const { service } = inject;
 const { alias } = computed;
 
-export default Ember.Component.extend({
+const LiquidWormhole = Ember.Component.extend({
   to: null,
   classNames: ['liquid-wormhole-container'],
 
@@ -14,9 +14,11 @@ export default Ember.Component.extend({
 
   nodes: computed(function() {
     if (this.element) {
-      return this.$().children();      
+      return this.$().children();
     }
   }),
+
+  childWormholes: computed(() => A()),
 
   liquidTargetDidChange: observer('liquidTarget', function() {
     this.get('liquidTargetService').removeItem(this._target, this);
@@ -24,9 +26,18 @@ export default Ember.Component.extend({
   }),
 
   didInsertElement() {
-    this._target = this.get('liquidTarget');
+    const parentWormhole = this.nearestOfType(LiquidWormhole);
+    const liquidTargetService = this.get('liquidTargetService');
 
-    this.get('liquidTargetService').appendItem(this._target, this);
+    if (parentWormhole) {
+      parentWormhole.get('childWormholes').unshiftObject(this);
+    } else {
+      this._target = this.get('liquidTarget');
+
+      liquidTargetService.appendItem(this._target, this);
+
+      this.get('childWormholes').forEach((wormhole) => liquidTargetService.appendItem(wormhole._target, wormhole));
+    }
 
     this._super.apply(this, arguments);
   },
@@ -37,3 +48,5 @@ export default Ember.Component.extend({
     this._super.apply(this, arguments);
   }
 });
+
+export default LiquidWormhole;

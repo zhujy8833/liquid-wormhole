@@ -37,7 +37,7 @@ export default Ember.Service.extend({
   appendToQueue(target, method, item) {
     this.get('queue').pushObject({ target, method, item });
 
-    if (!this.get('isAnimating')) {
+    if (!this.get('targets').isAny('isAnimating')) {
       this.flushQueue();
     }
   },
