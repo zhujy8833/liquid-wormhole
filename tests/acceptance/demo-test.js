@@ -1,4 +1,4 @@
-/* global ranTetherTransition, noTransitionsYet */
+/* global ranTransition, noTransitionsYet */
 import { startApp, destroyApp } from '../helpers/app-lifecycle';
 import { injectTransitionSpies } from '../helpers/integration';
 
@@ -46,13 +46,13 @@ test('basic liquid-wormhole works correctly and can determine context', function
 
   click('#flyout-button');
   andThen(() => {
-    equal(find('.liquid-target-container .liquid-tether').length, 1, 'it exists');
-    ranTetherTransition('to-left');
+    equal(find('.liquid-target-container .flyout').length, 1, 'it exists');
+    ranTransition('explode');
   });
 
   click('#flyout-button');
   andThen(() => {
-    equal(find('.liquid-target-container .liquid-tether').length, 'it exists');
-    ranTetherTransition('to-right');
+    equal(find('.liquid-target-container .flyout').length, 0, 'it closed');
+    ranTransition('explode');
   });
 });
