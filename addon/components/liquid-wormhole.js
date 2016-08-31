@@ -1,54 +1,30 @@
 import Ember from 'ember';
 
-const { A, computed, inject, observer, run } = Ember;
+const { A, computed, inject, generateGuid } = Ember;
 
 const { service } = inject;
-const { alias } = computed;
+const { reads } = computed;
 
-const LiquidWormhole = Ember.Component.extend({
-  to: null,
+export default Ember.Component.extend({
   classNames: ['liquid-wormhole-container'],
 
-  liquidTarget: alias('to'),
+  liquidTarget: reads('to'),
   liquidTargetService: service('liquid-target'),
 
-  nodes: computed(function() {
-    if (this.element) {
-      return this.$().children();
-    }
-  }),
+  stack: computed(() => generateGuid()),
 
-  childWormholes: computed(() => A()),
+  willInsertElement() {
+    const nodes = this.$().children();
+    this.set('nodes', nodes);
 
-  liquidTargetDidChange: observer('liquidTarget', function() {
-    this.get('liquidTargetService').removeItem(this._target, this);
-    this.get('liquidTargetService').appendItem(this._target, this);
-  }),
-
-  didInsertElement() {
-    const parentWormhole = this.nearestOfType(LiquidWormhole);
-    const childWormholes = this.get('childWormholes');
-    const liquidTargetService = this.get('liquidTargetService');
-
-    this._target = this.get('liquidTarget');
-
-    if (parentWormhole && parentWormhole._state !== 'inDOM') {
-      parentWormhole.get('childWormholes').unshiftObject(this);
-      parentWormhole.get('childWormholes').unshiftObjects(childWormholes);
-    } else {
-      liquidTargetService.appendItem(this._target, this);
-      
-      childWormholes.forEach((wormhole) => liquidTargetService.appendItem(wormhole._target, wormhole));
-    }
+    this.get('liquidTargetService').appendWormhole(this, this.get('liquidTarget'));
 
     this._super.apply(this, arguments);
   },
 
   willDestroyElement() {
-    this.get('liquidTargetService').removeItem(this._target, this);
+    this.get('liquidTargetService').removeWormhole(this, this.get('liquidTarget'));
 
     this._super.apply(this, arguments);
   }
 });
-
-export default LiquidWormhole;

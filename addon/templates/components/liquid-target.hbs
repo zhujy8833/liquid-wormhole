@@ -1,1 +1,12 @@
-{{yield this}}
+{{#each stacks as |stack|}}
+  <div class={{stack.firstObject.class}}>
+    {{#liquid-versions
+      value=stack.lastObject
+      notify=this
+      renderWhenFalse=true
+
+      as |currentWormhole|}}
+      {{liquid-append wormhole=currentWormhole}}
+    {{/liquid-versions}}
+  </div>
+{{/each}}

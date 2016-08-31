@@ -16,21 +16,18 @@
   </button>
 
   {{#if showHello}}
-    {{#liquid-wormhole
-      to="hello-world"
-      class="container123"
-    }}
-    <div class="notification modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Hello!</h4>
-      </div>
+    {{#liquid-wormhole stack="hello-world" class="container123"}}
+      <div class="notification modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Hello!</h4>
+        </div>
 
-      <div class="modal-body">
-        <p>
-          You can put me anywhere you want, it's easy!
-        </p>
+        <div class="modal-body">
+          <p>
+            You can put me anywhere you want, it's easy!
+          </p>
+        </div>
       </div>
-    </div>
     {{/liquid-wormhole}}
   {{/if}}
 </div>

@@ -1,77 +1,52 @@
 import Ember from 'ember';
 
-const { computed } = Ember;
+const { computed, A, generateGuid, getOwner } = Ember;
+const { reads } = computed;
 
 export default Ember.Service.extend({
-  targets: computed(() => Ember.A()),
-  queue: computed(() => Ember.A()),
+  // targets: computed(() => Ember.A()),
+  // queue: computed(() => Ember.A()),
 
-  appendItem(targetName, item) {
-    const targets = this.get('targets');
-    let target;
+  init() {
+    this._super(...arguments);
 
-    if (!(target = targets.findBy('name', targetName))) {
-      Ember.run(function() {
-        target = {
-          name: targetName,
-          items: Ember.A(),
-          class: `${targetName}-liquid-target`,
-          contextClass: item.get('targetClass'),
-          firstTime: true
-        };
+    this.targets = Ember.Object.create();
+  },
 
-        targets.pushObject(target);
-      });
+  appendWormhole(wormhole, targetName = 'default') {
+    let target = this.targets.get(targetName);
+
+    if (target === undefined) {
+      if (targetName === 'default') {
+        target = this.addDefaultTarget();
+      } else {
+        throw new Error('Liquid Wormhole target does not exist');
+      }
     }
 
-    this.appendToQueue(target, 'pushObject', item);
+    target.appendWormhole(wormhole);
   },
 
-  removeItem(targetName, item) {
-    const targets = this.get('targets');
-    const target = targets.findBy('name', targetName);
+  removeWormhole(wormhole, targetName = 'default') {
+    const target = this.targets.get(targetName);
 
-    this.appendToQueue(target, 'removeObject', item);
-  },
-
-  appendToQueue(target, method, item) {
-    this.get('queue').pushObject({ target, method, item });
-
-    if (!this.get('targets').isAny('isAnimating')) {
-      this.flushQueue();
+    if (target === undefined) {
+      throw new Error('Liquid Wormhole target does not exist');
     }
+
+    target.removeWormhole(wormhole);
   },
 
-  flushQueue() {
-    const queue = this.get('queue');
-
-    queue.forEach(({ target, method, item }) => {
-      target.items[method](item);
-    });
-
-    queue.clear();
+  registerTarget(targetName, wormholes) {
+    this.targets.set(targetName, wormholes);
   },
 
-  didAnimate() {
-    if (this.get('queue.length')) {
-      this.flushQueue();
-    } else {
-      this.cleanTargets();
-    }
-  },
+  addDefaultTarget() {
+    const instance = getOwner(this);
+    const target = instance.lookup('component:liquid-target');
+    target.set('classNames', ['liquid-target', 'default-liquid-target']);
+    target.appendTo(instance.rootElement);
 
-  cleanTargets() {
-    const targets = this.get('targets');
-
-    if (targets) {
-      const targetsToRemove = targets.filter((target) => {
-        const firstTime = target.firstTime;
-        target.firstTime = false;
-
-        return !firstTime && !target.isAnimating && target.items.get('length') === 0;
-      });
-
-      targets.removeObjects(targetsToRemove);
-    }
+    return target;
   }
 });

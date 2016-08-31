@@ -1,15 +1,15 @@
-{{#liquid-wormhole to="outer-wormhole"}}
+{{#liquid-wormhole class="outer-wormhole"}}
   <div class="green-box">
     Outer Wormhole
 
-    {{#liquid-wormhole to="middle-wormhole"}}
+    {{#liquid-wormhole class="middle-wormhole"}}
       <div class="blue-box">
         Middle Wormhole
 
         <button {{action "showInner"}}>Show</button>
 
         {{#if showingInner}}
-          {{#liquid-wormhole to="inner-wormhole"}}
+          {{#liquid-wormhole class="inner-wormhole"}}
             <div class="red-box">
               Inner Wormhole
             </div>
@@ -17,5 +17,11 @@
         {{/if}}
       </div>
     {{/liquid-wormhole}}
+  </div>
+{{/liquid-wormhole}}
+
+{{#liquid-wormhole class="middle-wormhole"}}
+  <div class="red-box">
+    Other Middle Wormhole
   </div>
 {{/liquid-wormhole}}

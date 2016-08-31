@@ -1,50 +1,92 @@
 import Ember from 'ember';
+import HashMap from 'perf-primitives/hash-map';
 import layout from '../templates/components/liquid-target';
 
-const { computed, inject } = Ember;
+const { computed, inject, A } = Ember;
 const { htmlSafe } = Ember.String;
 const { service } = inject;
 
 export default Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['liquid-target'],
   classNameBindings: ['contextClass'],
-  attributeBindings: ['style'],
 
-  firstTime: true,
-
+  name: 'default',
   liquidTargetService: service('liquidTarget'),
 
-  style: computed('index', function() {
-    return htmlSafe(`z-index: ${1000000 + this.get('index')}`);
-  }),
+  init() {
+    this._super(...arguments);
 
-  currentItem: computed('items.lastObject', function() {
-    return this.get('items.lastObject') || { emptyTarget: true };
-  }),
+    this.stackMap = new HashMap();
+    this.stackQueue = A();
+    this.set('stacks', A());
+
+    const name = this.get('name');
+
+    this.get('liquidTargetService').registerTarget(name, this);
+  },
+
+  appendWormhole(wormhole) {
+    const stackName = wormhole.get('stack');
+    let stack = this.stackMap.get(stackName);
+
+    if (stack === undefined) {
+      const cssClass = A([
+        wormhole.get('class'),
+        wormhole.get('stack'),
+        wormhole._containerClass
+      ]).compact().join(' ');
+
+      stack = A([{ stackName, class: cssClass, empty: true }]);
+
+      this.stackMap.set(stackName, stack);
+
+      //
+      this.stackQueue.pushObject(stack);
+
+      Ember.run.scheduleOnce('afterRender', this, this.flushStackQueue);
+    }
+
+    Ember.run.next(() => {
+      stack.pushObject(wormhole);
+    });
+  },
+
+  removeWormhole(wormhole) {
+    const stackName = wormhole.get('stack');
+    const stack = this.stackMap.get(stackName);
+
+    Ember.run.next(() => {
+      stack.removeObject(wormhole);
+    });
+  },
+
+  flushStackQueue() {
+    this.get('stacks').pushObjects(this.stackQueue);
+    this.stackQueue.clear();
+  },
 
   actions: {
     willTransition() {
-      this.set('target.isAnimating', true);
+      // Do nothing
     },
 
     afterChildInsertion() {
-      const currentItem = this.get('currentItem');
-
-      if (currentItem.didAppendNodes) {
-        this.get('currentItem').didAppendNodes();
-      }
+      // Do nothing
     },
 
-    afterTransition() {
-      if (!this.firstTime && !this.isDestroyed) {
-        const contextClass = this.get('currentItem.targetClass');
-        this.set('contextClass', contextClass);
-      }
+    afterTransition([{ value }]) {
+      if (value.empty) {
+        if (value.hasAnimated) {
+          const stacks = this.get('stacks')
+          const stack = this.stackMap.get(value.stackName);
 
-      this.firstTime = false;
-      this.set('target.isAnimating', false);
-      this.get('liquidTargetService').didAnimate();
+          stacks.removeObject(stack);
+          this.stackMap.delete(value.stackName);
+        } else {
+          value.hasAnimated = true;
+        }
+      }
     }
   }
 });
