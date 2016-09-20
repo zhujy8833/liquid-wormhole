@@ -2,8 +2,7 @@ import Ember from 'ember';
 import HashMap from 'perf-primitives/hash-map';
 import layout from '../templates/components/liquid-target';
 
-const { computed, inject, A } = Ember;
-const { htmlSafe } = Ember.String;
+const { inject, A } = Ember;
 const { service } = inject;
 
 export default Ember.Component.extend({
@@ -13,13 +12,17 @@ export default Ember.Component.extend({
 
   name: 'default',
   liquidTargetService: service('liquidTarget'),
+  matchContext: {
+    helperName: 'liquid-wormhole'
+  },
 
   init() {
     this._super(...arguments);
 
     this.stackMap = new HashMap();
-    this.stackQueue = A();
     this.set('stacks', A());
+
+    this.wormholeQueue = A();
 
     const name = this.get('name');
 
@@ -27,43 +30,53 @@ export default Ember.Component.extend({
   },
 
   appendWormhole(wormhole) {
-    const stackName = wormhole.get('stack');
-    let stack = this.stackMap.get(stackName);
+    // The order that wormholes are rendered in may be different from the order
+    // that they appear in templates, because child components get rendered before
+    // their parents. This logic inserts parent components *before* their children
+    // so the ordering is correct.
+    var appendIndex = this.wormholeQueue.get('length') - 1;
 
-    if (stack === undefined) {
-      const cssClass = A([
-        wormhole.get('class'),
-        wormhole.get('stack'),
-        wormhole._containerClass
-      ]).compact().join(' ');
+    for (; appendIndex >= 0; appendIndex--) {
+      const lastWormholeElement = this.wormholeQueue.objectAt(appendIndex).element;
 
-      stack = A([{ stackName, class: cssClass, empty: true }]);
-
-      this.stackMap.set(stackName, stack);
-
-      //
-      this.stackQueue.pushObject(stack);
-
-      Ember.run.scheduleOnce('afterRender', this, this.flushStackQueue);
+      if (!wormhole.element.contains(lastWormholeElement)) {
+        break; // break when we find the first wormhole that isn't a parent
+      }
     }
 
-    Ember.run.next(() => {
-      stack.pushObject(wormhole);
-    });
+    this.wormholeQueue.insertAt(appendIndex + 1, wormhole);
+
+    Ember.run.scheduleOnce('afterRender', this, this.flushWormholeQueue);
   },
 
   removeWormhole(wormhole) {
     const stackName = wormhole.get('stack');
     const stack = this.stackMap.get(stackName);
 
-    Ember.run.next(() => {
-      stack.removeObject(wormhole);
-    });
+    Ember.run.next(() => stack.removeObject(wormhole));
   },
 
-  flushStackQueue() {
-    this.get('stacks').pushObjects(this.stackQueue);
-    this.stackQueue.clear();
+  flushWormholeQueue() {
+    this.wormholeQueue.forEach((wormhole) => {
+      const stackName = wormhole.get('stack');
+      const stack = this.stackMap.get(stackName) || this.createStack(wormhole);
+
+      stack.pushObject(wormhole);
+    });
+
+    this.wormholeQueue.clear();
+  },
+
+  createStack(wormhole) {
+    const stackName = wormhole.get('stack');
+
+    const stack = A([ null ]);
+    stack.set('name', stackName);
+
+    this.stackMap.set(stackName, stack);
+    this.stacks.pushObject(stack);
+
+    return stack;
   },
 
   actions: {
@@ -75,17 +88,15 @@ export default Ember.Component.extend({
       // Do nothing
     },
 
-    afterTransition([{ value }]) {
-      if (value.empty) {
-        if (value.hasAnimated) {
-          const stacks = this.get('stacks')
-          const stack = this.stackMap.get(value.stackName);
+    afterTransition([{ value, view }]) {
+      view.element.style.transform = "";
+      if (value === null) {
+        const stacks = this.get('stacks');
+        const stackName = view.get('parentView.stackName');
+        const stack = this.stackMap.get(stackName);
 
-          stacks.removeObject(stack);
-          this.stackMap.delete(value.stackName);
-        } else {
-          value.hasAnimated = true;
-        }
+        stacks.removeObject(stack);
+        this.stackMap.delete(stackName);
       }
     }
   }

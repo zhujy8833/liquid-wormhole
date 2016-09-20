@@ -5,9 +5,9 @@ export function target(name) {
 }
 
 export function onOpenWormhole() {
-  return new Constraint('newValue', ({ empty }) => !empty);
+  return new Constraint('newValue', (value) => value !== null);
 }
 
 export function onCloseWormhole() {
-  return new Constraint('newValue', ({ empty }) => empty);
+  return new Constraint('newValue', (value) => value === null);
 }

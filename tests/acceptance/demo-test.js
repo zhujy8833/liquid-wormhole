@@ -20,23 +20,13 @@ module('Acceptance: Demos', {
   }
 });
 
-test('target container exists and is empty on load', function() {
-  visit('/examples');
-
-  andThen(() => {
-    noTransitionsYet();
-    equal(find('.liquid-target-container').length, 1, 'it exists');
-    equal(find('.liquid-target-container > .liquid-target').length, 0, 'it\'s empty');
-  });
-});
-
 test('target container is cleaned when empty', function() {
   visit('/examples');
   click('#flyout-button');
   click('#flyout-button');
 
   andThen(() => {
-    equal(find('.liquid-target-container > .liquid-target').length, 0, 'it\'s empty');
+    equal(find('.default-liquid-target > .liquid-target').length, 0, 'it\'s empty');
   });
 });
 
@@ -46,13 +36,13 @@ test('basic liquid-wormhole works correctly and can determine context', function
 
   click('#flyout-button');
   andThen(() => {
-    equal(find('.liquid-target-container .flyout').length, 1, 'it exists');
+    equal(find('.default-liquid-target .flyout').length, 1, 'it exists');
     ranTransition('explode');
   });
 
   click('#flyout-button');
   andThen(() => {
-    equal(find('.liquid-target-container .flyout').length, 0, 'it closed');
+    equal(find('.default-liquid-target .flyout').length, 0, 'it closed');
     ranTransition('explode');
   });
 });

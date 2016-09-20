@@ -1,16 +1,13 @@
 import Ember from 'ember';
+import HashMap from 'perf-primitives/hash-map';
 
-const { computed, A, generateGuid, getOwner } = Ember;
-const { reads } = computed;
+const { getOwner } = Ember;
 
 export default Ember.Service.extend({
-  // targets: computed(() => Ember.A()),
-  // queue: computed(() => Ember.A()),
-
   init() {
     this._super(...arguments);
 
-    this.targets = Ember.Object.create();
+    this.targets = new HashMap();
   },
 
   appendWormhole(wormhole, targetName = 'default') {

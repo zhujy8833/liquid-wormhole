@@ -4,7 +4,7 @@ export default Ember.Component.extend({
   willInsertElement() {
     const wormhole = this.get('wormhole');
 
-    if (wormhole.willAppendNodes) {
+    if (wormhole && wormhole.willAppendNodes) {
       wormhole.willAppendNodes(this.element);
     }
   },
@@ -15,7 +15,7 @@ export default Ember.Component.extend({
 
     this.$().append(nodes);
 
-    if (wormhole.didAppendNodes) {
+    if (wormhole && wormhole.didAppendNodes) {
       wormhole.didAppendNodes(this.element);
     }
   }

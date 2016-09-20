@@ -1,21 +1,29 @@
-<div class="nav-container">
-  <div class="row">
-    <h1 class="nav-title col-xs-6 col-sm-12">
-      Liquid Wormhole
-    </h1>
-    <div class="col-xs-6 text-right visible-xs">
-      <a class="nav-button nav-svg {{if navOpen 'active'}}" {{action "toggleNav"}}>{{svg-icon.hamburger}}</a>
-    </div>
+<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
+  <div class="navbar-header">
+    <button type="button" {{action "toggleNav"}} class="navbar-toggle fa fa-bars">
+      <span class="sr-only">Toggle navigation</span>
+    </button>
+    <a class="navbar-brand" href="#">Liquid Tether</a>
   </div>
-</div>
-<div class="nav-menu {{if navOpen 'nav-open'}}">
-  {{link-to 'Introduction' 'index' class="nav-item"}}
-
-  {{link-to 'The Basics' 'basics' class="nav-item"}}
-
-  {{link-to 'Examples' 'examples' class="nav-item"}}
-
-  <a class="nav-item nav-svg" href="https://github.com/pzuraq/liquid-wormhole">
-    GitHub {{svg-icon.github}}
-  </a>
-</div>
+  <div class="navbar-collapse {{unless navOpen 'collapse'}}">
+    <ul class="nav navbar-nav navbar-left">
+      {{#link-to 'index' class="nav-item" tagName="li"}}
+        <a>Introduction</a>
+      {{/link-to}}
+      {{#link-to 'basics' class="nav-item" tagName="li"}}
+        <a>The Basics</a>
+      {{/link-to}}
+      {{#link-to 'examples' class="nav-item" tagName="li"}}
+        <a>Examples</a>
+      {{/link-to}}
+    </ul>
+    <ul class="nav navbar-nav navbar-right navbar-break">
+      <li>
+        <a class="nav-item" href="https://github.com/pzuraq/liquid-tether">
+          GitHub
+          <span class="fa fa-github"></span>
+        </a>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
