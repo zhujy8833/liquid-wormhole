@@ -1,0 +1,17 @@
+{{#liquid-wormhole class="outer-wormhole"}}
+  <div class="green-box">
+    First Wormhole
+
+    {{#liquid-wormhole class="middle-wormhole"}}
+      <div class="blue-box">
+        Second Wormhole
+      </div>
+    {{/liquid-wormhole}}
+  </div>
+{{/liquid-wormhole}}
+
+{{#liquid-wormhole class="middle-wormhole"}}
+  <div class="red-box">
+    Third Wormhole
+  </div>
+{{/liquid-wormhole}}

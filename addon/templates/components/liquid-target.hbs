@@ -1,1 +1,15 @@
-{{yield this}}
+{{#each stacks as |stack|}}
+  <div id={{stack.name}} class="liquid-target-stack">
+    {{#liquid-versions
+      value=stack.lastObject
+      notify=this
+      renderWhenFalse=true
+      name="liquid-wormhole"
+      matchContext=matchContext
+      stackName=stack.name
+
+      as |wormhole|}}
+      {{liquid-append wormhole=wormhole}}
+    {{/liquid-versions}}
+  </div>
+{{/each}}

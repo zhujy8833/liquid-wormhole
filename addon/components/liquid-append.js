@@ -1,9 +1,22 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  willInsertElement() {
+    const wormhole = this.get('wormhole');
+
+    if (wormhole && wormhole.willAppendNodes) {
+      wormhole.willAppendNodes(this.element);
+    }
+  },
+
   didInsertElement() {
-    const nodes = this.get('nodes');
+    const wormhole = this.get('wormhole');
+    const nodes = this.get('wormhole.nodes');
 
     this.$().append(nodes);
+
+    if (wormhole && wormhole.didAppendNodes) {
+      wormhole.didAppendNodes(this.element);
+    }
   }
 });

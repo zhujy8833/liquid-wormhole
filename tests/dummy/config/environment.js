@@ -17,10 +17,10 @@ module.exports = function(environment) {
     contentSecurityPolicy: {
       'default-src': "'none'",
       'script-src': "'self'",
-      'font-src': "'self'",
+      'font-src': "'self' https://maxcdn.bootstrapcdn.com",
       'connect-src': "'self'",
       'img-src': "'self'",
-      'style-src': "'self' 'unsafe-inline'",
+      'style-src': "'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com",
       'media-src': "'self'"
     },
 
@@ -40,7 +40,6 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter
@@ -52,8 +51,8 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.locationType = 'hash';
-    ENV.baseURL = '/liquid-wormhole/';
-    ENV.baseURL = '/liquid-tether'
+    ENV.rootURL = '/liquid-wormhole/';
+    ENV.rootURL = '/liquid-tether'
   }
 
   return ENV;

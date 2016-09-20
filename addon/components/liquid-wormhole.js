@@ -1,54 +1,45 @@
 import Ember from 'ember';
+import layout from '../templates/components/liquid-wormhole';
 
-const { A, computed, inject, observer, run } = Ember;
+const { computed, inject, generateGuid } = Ember;
 
 const { service } = inject;
-const { alias } = computed;
+const { reads } = computed;
 
-const LiquidWormhole = Ember.Component.extend({
-  to: null,
-  classNames: ['liquid-wormhole-container'],
+export default Ember.Component.extend({
+  layout,
 
-  liquidTarget: alias('to'),
+  liquidTarget: reads('to'),
   liquidTargetService: service('liquid-target'),
 
-  nodes: computed(function() {
-    if (this.element) {
-      return this.$().children();
-    }
-  }),
+  stack: computed(() => generateGuid()),
 
-  childWormholes: computed(() => A()),
+  init() {
+    const wormholeClass = this.get('class');
+    const wormholeId = this.get('id');
 
-  liquidTargetDidChange: observer('liquidTarget', function() {
-    this.get('liquidTargetService').removeItem(this._target, this);
-    this.get('liquidTargetService').appendItem(this._target, this);
-  }),
+    this.set('wormholeClass', wormholeClass);
+    this.set('wormholeId', wormholeId);
 
-  didInsertElement() {
-    const parentWormhole = this.nearestOfType(LiquidWormhole);
-    const childWormholes = this.get('childWormholes');
-    const liquidTargetService = this.get('liquidTargetService');
+    this._super(...arguments);
+  },
 
-    this._target = this.get('liquidTarget');
+  willInsertElement() {
+    const nodes = this.$().children();
+    this.set('nodes', nodes.clone());
+    nodes.remove();
 
-    if (parentWormhole && parentWormhole._state !== 'inDOM') {
-      parentWormhole.get('childWormholes').unshiftObject(this);
-      parentWormhole.get('childWormholes').unshiftObjects(childWormholes);
-    } else {
-      liquidTargetService.appendItem(this._target, this);
-      
-      childWormholes.forEach((wormhole) => liquidTargetService.appendItem(wormhole._target, wormhole));
-    }
+    this.element.className = 'liquid-wormhole-container';
+    this.element.id = '';
+
+    this.get('liquidTargetService').appendWormhole(this, this.get('liquidTarget'));
 
     this._super.apply(this, arguments);
   },
 
   willDestroyElement() {
-    this.get('liquidTargetService').removeItem(this._target, this);
+    this.get('liquidTargetService').removeWormhole(this, this.get('liquidTarget'));
 
     this._super.apply(this, arguments);
   }
 });
-
-export default LiquidWormhole;

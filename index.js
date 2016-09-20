@@ -8,5 +8,9 @@ module.exports = {
 
   preconcatTree: function(tree) {
     return filterInitializers(tree, this.app.name);
+  },
+
+  isDevelopingAddon: function() {
+    return true;
   }
 };
