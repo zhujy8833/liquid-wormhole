@@ -9,36 +9,48 @@ const { reads } = computed;
 export default Ember.Component.extend({
   layout,
 
-  liquidTarget: reads('to'),
-  liquidTargetService: service('liquid-target'),
+  to: reads('destination'),
+  liquidWormholeService: service('liquid-wormhole'),
 
   stack: computed(() => generateGuid()),
 
+  // Truthy value by default
+  value: true,
+
   init() {
     const wormholeClass = this.get('class');
-    const wormholeId = this.get('id');
+    const wormholeId = this.get('stack') || this.get('id');
 
     this.set('wormholeClass', wormholeClass);
     this.set('wormholeId', wormholeId);
 
+    if (Ember.typeOf(this.get('send')) !== 'function') {
+      this.set('hasSend', true);
+    }
+
     this._super(...arguments);
   },
 
-  willInsertElement() {
+  didUpdateAttrs() {
+    this._super(...arguments);
+    this.get('liquidWormholeService').removeWormhole(this, this.get('to'));
+    this.get('liquidWormholeService').appendWormhole(this, this.get('to'));
+  },
+
+  didInsertElement() {
     const nodes = this.$().children();
-    this.set('nodes', nodes.clone());
-    nodes.remove();
+    this.set('nodes', nodes);
 
     this.element.className = 'liquid-wormhole-container';
     this.element.id = '';
 
-    this.get('liquidTargetService').appendWormhole(this, this.get('liquidTarget'));
+    this.get('liquidWormholeService').appendWormhole(this, this.get('to'));
 
     this._super.apply(this, arguments);
   },
 
   willDestroyElement() {
-    this.get('liquidTargetService').removeWormhole(this, this.get('liquidTarget'));
+    this.get('liquidWormholeService').removeWormhole(this, this.get('to'));
 
     this._super.apply(this, arguments);
   }

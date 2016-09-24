@@ -1,90 +1,78 @@
 import Ember from "ember";
-import { Promise } from "liquid-fire";
 
-// Explode is not, by itself, an animation. It exists to pull apart
-// other elements so that each of the pieces can be targeted by
-// animations.
+export default function wormhole({ use }) {
+  let oldWormholeElement, newWormholeElement;
 
-export default function wormhole({ name, args, useViewportDimensions }) {
-  if (this.newElement) {
-    this.newElement.css({visibility: ''});
-  }
   if (this.oldElement) {
-    this.oldElement.css({visibility: 'hidden'});
-  }
-  return explodePiece(this, name, args);
-}
+    oldWormholeElement = this.oldElement.find('.liquid-wormhole-element:last-child');
 
-function explodePiece(context, name, args) {
-  var childContext = Ember.copy(context);
-  var cleanupOld, cleanupNew;
+    this.oldElement = null;
 
-  cleanupOld = _explodePart(context, 'oldElement', childContext, '.liquid-wormhole-element');
-  cleanupNew = _explodePart(context, 'newElement', childContext, '.liquid-wormhole-element');
+    if (oldWormholeElement.length > 0) {
+      const newChild = oldWormholeElement.clone();
+      newChild.addClass('liquid-wormhole-temp-element');
 
-  return runAnimation(childContext, name, args).finally(() => {
-    if (cleanupOld) { cleanupOld(); }
-    if (cleanupNew) { cleanupNew(); }
-  });
-}
+      oldWormholeElement.css({ visibility: 'hidden' });
 
-function _explodePart(context, field, childContext, selector) {
-  var child, childOffset, width, height, newChild;
-  var elt = context[field];
+      const offset = oldWormholeElement.offset();
 
-  childContext[field] = null;
-  if (elt && selector) {
-    child = elt.find(selector);
-
-    if (child.length > 0) {
-      childOffset = child.offset();
-      width = child.outerWidth();
-      height = child.outerHeight();
-      newChild = child.clone();
-
-      // Hide the original element
-      child.css({visibility: 'hidden'});
-
-      // If the original element's parent was hidden, hide our clone
-      // too.
-      if (elt.css('visibility') === 'hidden') {
-        newChild.css({ visibility: 'hidden' });
-      }
-      newChild.appendTo(elt.parent());
-      newChild.outerWidth(width);
-      newChild.outerHeight(height);
-      var newParentOffset = newChild.offsetParent().offset();
       newChild.css({
         position: 'absolute',
-        top: childOffset.top - newParentOffset.top,
-        left: childOffset.left - newParentOffset.left,
-        margin: 0
+        top: offset.top,
+        left: offset.left,
+        bottom: '',
+        right: '',
+        margin: '0px',
+        transform: ''
       });
 
-      // Pass the clone to the next animation
-      childContext[field] = newChild;
-      return function cleanup() {
-        newChild.remove();
-        child.css({visibility: ''});
-      };
+      newChild.appendTo(oldWormholeElement.parent());
+      this.oldElement = newChild;
     }
   }
-}
 
-function animationFor(context, name, args) {
-  var func;
-  if (typeof name === 'function') {
-    func = name;
-  } else {
-    func = context.lookup(name);
+  if (this.newElement) {
+    newWormholeElement = this.newElement.find('.liquid-wormhole-element:last-child');
+
+    this.newElement = null;
+
+    if (newWormholeElement.length > 0) {
+      const newChild = newWormholeElement.clone();
+
+      newWormholeElement.css({ visibility: 'hidden' });
+
+      const offset = newWormholeElement.offset();
+
+      newChild.css({
+        position: 'absolute',
+        top: offset.top,
+        left: offset.left,
+        bottom: '',
+        right: '',
+        margin: '0px',
+        transform: ''
+      });
+
+      newChild.appendTo(newWormholeElement.parent());
+      this.newElement = newChild;
+    }
   }
-  return function() {
-    return Promise.resolve(func.apply(this, args));
-  };
-}
 
-function runAnimation(context, name, args) {
-  return new Promise((resolve, reject) => {
-    animationFor(context, name, args).apply(context).then(resolve, reject);
+  var animation;
+  if (typeof use.handler === 'function') {
+    animation = use.handler;
+  } else {
+    animation = context.lookup(use.name);
+  }
+
+  return animation.apply(this, use.args).finally(() => {
+    if (this.oldElement && oldWormholeElement) {
+      this.oldElement.remove()
+      oldWormholeElement.css({ visibility: 'visible' });
+    }
+    if (this.newElement && newWormholeElement) {
+      this.newElement.remove()
+      newWormholeElement.css({ visibility: 'visible' });
+    }
   });
-}
+};

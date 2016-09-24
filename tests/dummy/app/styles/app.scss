@@ -13,25 +13,33 @@ body {
 }
 
 .main-container {
-  padding: 80px 20px 100px;
+  @extend .container;
 
   @media screen and (min-width: 768px) {
-    padding: 0 20px 100px 270px;
+    padding: 20px;
   }
+}
+
+.top-right {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  margin: 0;
 }
 
 .example-button-container {
   margin: 40px;
-
-  &.frontpage {
-    #hello-world {
-      margin: 60px 0;
-    }
-  }
+  text-align: center;
 }
 
-#hello-world-popover {
-  max-width: 430px;
+.front-page-container-1 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.front-page-container-2 {
+  margin-bottom: 40px;
+  text-align: center;
 }
 
 .fixed-to-bottom {

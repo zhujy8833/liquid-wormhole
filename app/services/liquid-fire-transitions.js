@@ -1,6 +1,7 @@
 import Action from "liquid-fire/action";
 import RunningTransition from "liquid-fire/running-transition";
 import TransitionMap from "liquid-fire/transition-map";
+import WeakMap from 'ember-weakmap';
 
 const wormholeActionMap = new WeakMap();
 
@@ -9,6 +10,9 @@ export default TransitionMap.extend({
     if (conditions.matchContext && conditions.matchContext.helperName === 'liquid-wormhole'
         || conditions.helperName === 'liquid-wormhole') {
 
+      const versions = conditions.versions;
+
+      conditions.versions = versions.map(version => version.value || version);
       conditions.parentElement = conditions.parentElement.find('.liquid-wormhole-element');
       conditions.firstTime = 'no';
 
@@ -19,11 +23,7 @@ export default TransitionMap.extend({
         if (wormholeActionMap.has(rule)) {
           action = wormholeActionMap.get(rule);
         } else {
-          action = new Action('wormhole', [{
-            name: rule.use.name,
-            args: rule.use.args,
-            useViewportDimensions: true
-          }]);
+          action = new Action('wormhole', [{ use: rule.use }]);
           action.validateHandler(this);
 
           wormholeActionMap.set(rule, action);
@@ -32,7 +32,7 @@ export default TransitionMap.extend({
         action = this.defaultAction();
       }
 
-      return new RunningTransition(this, conditions.versions, action);
+      return new RunningTransition(this, versions, action);
     } else {
       return this._super(conditions);
     }

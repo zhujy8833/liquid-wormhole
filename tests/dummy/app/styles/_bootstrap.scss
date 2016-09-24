@@ -14,6 +14,9 @@
 
 $brand-secondary: #d35400;
 
+// Large screen / wide desktop
+$container-large-desktop: 992px;
+
 // Flat UI Variables
 @import "flat-ui/variables";
 
@@ -109,7 +112,7 @@ $link-hover-color:          $carrot;
 @import "flat-ui/modules/switch";
 @import "flat-ui/modules/share";
 
-// Examples
+// Docs
 @import "flat-ui/modules/palette";
 @import "flat-ui/modules/tile";
 @import "flat-ui/modules/todo";
