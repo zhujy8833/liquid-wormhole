@@ -1,18 +1,30 @@
-.default-liquid-target {
+.default-liquid-destination {
   position: absolute;
   top: 0;
   z-index: 9999;
 }
 
-.default-liquid-target .liquid-target-stack {
-  width: 100vw;
+.default-liquid-destination .liquid-destination-stack {
   position: absolute;
 }
 
-.default-liquid-target .liquid-child {
-  overflow: visible;
-  width: 100vw;
+.default-liquid-destination .liquid-child {
   position: absolute;
+  top: 0;
+  left: 0;
+
+  overflow: visible;
+  visibility: hidden;
+}
+
+.default-liquid-destination .liquid-child > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  width: 100vw;
+  height: 100vh;
+  visibility: hidden;
 }
 
 .liquid-wormhole-container {

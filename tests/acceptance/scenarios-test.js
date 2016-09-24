@@ -12,31 +12,31 @@ module('Acceptance: Scenarios', {
   }
 });
 
-test('components are not destroyed until animation has finished', function() {
+test('components are not destroyed until animation has finished', function(assert) {
   visit('/scenarios/component-in-wormhole');
 
   andThen(() => {
-    find('button:contains(Toggle)').click();
-    equal(find('.velocity-animating').text().trim(), 'testing', 'component markup still exists');
+    click('button:contains(Toggle Wormhole)');
+    assert.equal(find('.liquid-wormhole-element').text().trim(), 'testing123', 'component markup still exists');
   });
 });
 
-test('templates still have action context once rendered', function() {
-  visit('/scenarios/actions-in-wormhole', function() {
-    visit('/scenarios/component-in-wormhole');
+test('templates still have action context once rendered', function(assert) {
+  visit('/scenarios/actions-in-wormhole');
 
-    click('button:contains(Toggle)');
+  andThen(() => {
+    assert.equal(find('.default-liquid-destination .liquid-wormhole-element').length, 1, 'it has a wormhole');
+  });
 
-    andThen(() => {
+  click('button:contains(Toggle Wormhole)');
 
-    });
+  andThen(() => {
+    assert.equal(find('.default-liquid-destination .liquid-wormhole-element').length, 0, 'it closed the wormhole');
   });
 });
 
-test('nested wormholes work properly', function() {
+test('nested wormholes work properly', function(assert) {
   visit('/scenarios/nested-wormholes');
-
-  click('button');
 
   andThen(() => {
     const wormholes = $('.liquid-wormhole-element');
@@ -45,8 +45,18 @@ test('nested wormholes work properly', function() {
     const secondWormhole = wormholes.eq(1);
     const thirdWormhole = wormholes.eq(2);
 
-    ok(firstWormhole.hasClass('green-box'), 'First wormhole renders in correct order');
-    ok(secondWormhole.hasClass('blue-box'), 'Second wormhole renders in correct order');
-    ok(thirdWormhole.hasClass('red-box'), 'Third wormhole renders in correct order');
+    assert.ok(firstWormhole.hasClass('green-box'), 'First wormhole renders in correct order');
+    assert.ok(secondWormhole.hasClass('blue-box'), 'Second wormhole renders in correct order');
+    assert.ok(thirdWormhole.hasClass('red-box'), 'Third wormhole renders in correct order');
+  });
+});
+
+test('destination container has correct class if wormholes are present', function(assert) {
+  assert.ok(find('.default-liquid-destination.has-wormholes').length === 0, 'No wormholes class');
+
+  visit('/scenarios/nested-wormholes');
+
+  andThen(() => {
+    assert.ok(find('.default-liquid-destination.has-wormholes').length > 0, 'Has wormholes class');
   });
 });

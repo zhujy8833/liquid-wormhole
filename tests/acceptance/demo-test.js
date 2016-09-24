@@ -20,29 +20,29 @@ module('Acceptance: Demos', {
   }
 });
 
-test('target container is cleaned when empty', function() {
-  visit('/examples');
-  click('#flyout-button');
-  click('#flyout-button');
+test('destination container is cleaned when empty', function(assert) {
+  visit('/docs');
+  click('#hello-world-button');
+  click('#hello-world-button');
 
   andThen(() => {
-    equal(find('.default-liquid-target > .liquid-target').length, 0, 'it\'s empty');
+    assert.equal(find('.default-liquid-destination .liquid-destination-stack').length, 0, 'it\'s empty');
   });
 });
 
-test('basic liquid-wormhole works correctly and can determine context', function() {
-  visit('/examples');
+test('basic liquid-wormhole works correctly and can determine context', function(assert) {
+  visit('/docs');
   noTransitionsYet();
 
-  click('#flyout-button');
+  click('#hello-world-button');
   andThen(() => {
-    equal(find('.default-liquid-target .flyout').length, 1, 'it exists');
-    ranTransition('explode');
+    assert.equal(find('.default-liquid-destination .liquid-wormhole-element').length, 1, 'it exists');
+    ranTransition('wormhole');
   });
 
-  click('#flyout-button');
+  click('#hello-world-button');
   andThen(() => {
-    equal(find('.default-liquid-target .flyout').length, 0, 'it closed');
-    ranTransition('explode');
+    assert.equal(find('.default-liquid-destination .liquid-wormhole-element').length, 0, 'it closed');
+    ranTransition('wormhole');
   });
 });

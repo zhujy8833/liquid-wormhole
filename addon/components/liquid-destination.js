@@ -1,20 +1,23 @@
 import Ember from 'ember';
 import HashMap from 'perf-primitives/hash-map';
-import layout from '../templates/components/liquid-target';
+import layout from '../templates/components/liquid-destination';
 
-const { inject, A } = Ember;
+const { inject, computed, A } = Ember;
+const { gt } = computed;
 const { service } = inject;
 
 export default Ember.Component.extend({
   layout,
-  classNames: ['liquid-target'],
-  classNameBindings: ['contextClass'],
+  classNames: ['liquid-destination'],
+  classNameBindings: ['hasWormholes'],
 
   name: 'default',
-  liquidTargetService: service('liquidTarget'),
+  liquidWormholeService: service('liquidWormhole'),
   matchContext: {
     helperName: 'liquid-wormhole'
   },
+
+  hasWormholes: gt('stacks.length', 0),
 
   init() {
     this._super(...arguments);
@@ -26,7 +29,7 @@ export default Ember.Component.extend({
 
     const name = this.get('name');
 
-    this.get('liquidTargetService').registerTarget(name, this);
+    this.get('liquidWormholeService').registerDestination(name, this);
   },
 
   appendWormhole(wormhole) {
@@ -52,8 +55,13 @@ export default Ember.Component.extend({
   removeWormhole(wormhole) {
     const stackName = wormhole.get('stack');
     const stack = this.stackMap.get(stackName);
+    const item = stack.find(item => item && item.wormhole === wormhole);
 
-    Ember.run.next(() => stack.removeObject(wormhole));
+    const newNodes = item.get('nodes').clone();
+    item.set('nodes', newNodes);
+    item.set('_replaceNodes', true);
+
+    Ember.run.next(() => stack.removeObject(item));
   },
 
   flushWormholeQueue() {
@@ -61,7 +69,15 @@ export default Ember.Component.extend({
       const stackName = wormhole.get('stack');
       const stack = this.stackMap.get(stackName) || this.createStack(wormhole);
 
-      stack.pushObject(wormhole);
+      const nodes = wormhole.get('nodes');
+      const value = wormhole.get('value');
+
+      const item = Ember.Object.create({ nodes, wormhole, value });
+
+      // Reset visibility in case we made them visible, see below
+      nodes.css({ visibility: 'hidden' });
+
+      stack.pushObject(item);
     });
 
     this.wormholeQueue.clear();
@@ -89,7 +105,10 @@ export default Ember.Component.extend({
     },
 
     afterTransition([{ value, view }]) {
-      view.element.style.transform = "";
+      // If wormholes were made w/o animations, they need to be made visible manually.
+      this.$(view.element).find('.liquid-wormhole-element').css({ visibility: 'visible' });
+
+      // Clean empty stacks
       if (value === null) {
         const stacks = this.get('stacks');
         const stackName = view.get('parentView.stackName');

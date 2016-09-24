@@ -1,0 +1,73 @@
+At times you may want to animate between different wormholes - for a complicated
+modal flow, or an onboarding flow, or something else. You can do this by
+specifying a stack name with the `stack` property. New wormholes will be pushed
+onto an existing stack, and only the most recent wormhole will be showing. When
+matching in `toValue`, `fromValue`, or `betweenValues`, the `value` parameter
+for both the previous wormhole on the stack and the next one will be passed in.
+You can pass in any value you want in the property and match based on that.
+
+The stack name will be applied as the id to the tethers, allow you to match them using
+the `matchSelector` helper from liquid-fire.
+
+<div class="example-button-container">
+  <button {{action 'showFirstStep'}} class="btn btn-primary btn-embossed">
+    Open Dialogue
+  </button>
+  {{#if showFirstStep}}
+    {{#liquid-wormhole stack="modal-dialog" index=1 class="modal-content top-right"}}
+      <div class="modal-header">
+        Step One
+      </div>
+      <div class="modal-footer">
+        <button {{action 'showSecondStep'}} class="btn btn-primary btn-embossed">
+          Go on
+        </button>
+      </div>
+    {{/liquid-wormhole}}
+  {{/if}}
+  {{#if showSecondStep}}
+    {{#liquid-wormhole stack="modal-dialog" index=2 class="modal-content top-right"}}
+      <div class="modal-header">
+        Step Two
+      </div>
+      <div class="modal-footer">
+        <button {{action 'closeModal'}} class="btn btn-primary btn-embossed">
+          Done
+        </button>
+      </div>
+    {{/liquid-wormhole}}
+  {{/if}}
+</div>
+
+```
+<button {{action 'showFirstStep'}}>
+  Open Dialogue
+</button>
+
+{{#if showFirstStep}}
+  {{#liquid-wormhole stack="modal-dialog" index=1}}
+    ...
+  {{/liquid-wormhole}}
+{{/if}}
+
+{{#if showSecondStep}}
+  {{#liquid-wormhole stack="modal-dialog" index=2}}
+    ...
+  {{/liquid-wormhole}}
+{{/if}}
+```
+
+```
+this.transition(
+  this.hasClass('modal-dialog'),
+  this.toValue(true),
+  this.use('to-up'),
+  this.reverse('fade')
+);
+
+this.transition(
+  this.hasClass('modal-dialog'),
+  this.toValue((toValue, fromValue) => toValue && fromValue && toValue > fromValue),
+  this.use('to-right')
+);
+```
