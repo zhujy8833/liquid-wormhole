@@ -16,7 +16,7 @@ will accept as attributes.
       <td>`stack`</td>
       <td>String</td>
       <td>
-        The name of the stack that the tether will be a part of. Defaults to a
+        The name of the stack that the wormhole will be a part of. Defaults to a
         unique ID.
       </td>
     </tr>
@@ -31,14 +31,14 @@ will accept as attributes.
       <td>`send`</td>
       <td>Component Name or Helper</td>
       <td>
-        A component that will be rendered and tethered.
+        A component that will be rendered and wormholed.
       </td>
     </tr>
     <tr>
       <td>`click`</td>
       <td>Action Name or Helper</td>
       <td>
-        An action that will trigger when the tether is clicked.
+        An action that will trigger when the wormhole is clicked.
       </td>
       <tr>
         <td>`to`</td>

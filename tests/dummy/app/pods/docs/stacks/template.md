@@ -6,7 +6,7 @@ matching in `toValue`, `fromValue`, or `betweenValues`, the `value` parameter
 for both the previous wormhole on the stack and the next one will be passed in.
 You can pass in any value you want in the property and match based on that.
 
-The stack name will be applied as the id to the tethers, allow you to match them using
+The stack name will be applied as the id of the wormhole, allow you to match them using
 the `matchSelector` helper from liquid-fire.
 
 <div class="example-button-container">
