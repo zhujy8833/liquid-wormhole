@@ -51,8 +51,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.locationType = 'hash';
-    ENV.rootURL = '/liquid-wormhole/';
-    ENV.rootURL = '/liquid-tether'
+    ENV.rootURL = '/liquid-wormhole';
   }
 
   return ENV;

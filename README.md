@@ -18,7 +18,7 @@ continue for 1.13 and up for as long Ember core support continues.
 ## Installation
 
 ```
-ember install liquid-tether
+ember install liquid-wormhole
 ```
 
 ## Contributing
