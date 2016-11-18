@@ -19,6 +19,7 @@ Router.map(function() {
     this.route('nested-wormholes');
     this.route('component-in-wormhole');
     this.route('actions-in-wormhole');
+    this.route('liquid-fire-in-wormhole');
   });
 });
 

@@ -8,7 +8,7 @@
   position: absolute;
 }
 
-.default-liquid-destination .liquid-child {
+.default-liquid-destination > .liquid-destination-stack > .liquid-child {
   position: absolute;
   top: 0;
   left: 0;
@@ -17,11 +17,11 @@
   visibility: hidden;
 }
 
-.default-liquid-destination .liquid-child > div {
+.default-liquid-destination > .liquid-destination-stack > .liquid-child > div {
   position: absolute;
   top: 0;
   left: 0;
-  
+
   width: 100vw;
   height: 100vh;
   visibility: hidden;
