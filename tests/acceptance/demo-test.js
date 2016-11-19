@@ -2,10 +2,12 @@
 import { startApp, destroyApp } from '../helpers/app-lifecycle';
 import { injectTransitionSpies } from '../helpers/integration';
 
+import { module, test } from 'ember-qunit';
+
 let app;
 
 module('Acceptance: Demos', {
-  setup: function() {
+  beforeEach: function() {
     app = startApp();
 
     // Conceptually, integration tests shouldn't be digging around in
@@ -15,7 +17,7 @@ module('Acceptance: Demos', {
     injectTransitionSpies(app);
   },
 
-  teardown: function() {
+  afterEach: function() {
     destroyApp(app);
   }
 });
@@ -32,17 +34,17 @@ test('destination container is cleaned when empty', function(assert) {
 
 test('basic liquid-wormhole works correctly and can determine context', function(assert) {
   visit('/docs');
-  noTransitionsYet();
+  noTransitionsYet(assert);
 
   click('#hello-world-button');
   andThen(() => {
     assert.equal(find('.default-liquid-destination .liquid-wormhole-element').length, 1, 'it exists');
-    ranTransition('wormhole');
+    ranTransition(assert, 'wormhole');
   });
 
   click('#hello-world-button');
   andThen(() => {
     assert.equal(find('.default-liquid-destination .liquid-wormhole-element').length, 0, 'it closed');
-    ranTransition('wormhole');
+    ranTransition(assert, 'wormhole');
   });
 });
