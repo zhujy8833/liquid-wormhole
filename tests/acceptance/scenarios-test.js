@@ -1,13 +1,15 @@
 import { startApp, destroyApp } from '../helpers/app-lifecycle';
 
+import { module, test } from 'ember-qunit';
+
 let app;
 
 module('Acceptance: Scenarios', {
-  setup: function() {
+  beforeEach: function() {
     app = startApp();
   },
 
-  teardown: function() {
+  afterEach: function() {
     destroyApp(app);
   }
 });
