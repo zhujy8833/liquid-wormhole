@@ -60,3 +60,19 @@ test('destination container has correct class if wormholes are present', functio
     assert.ok(find('.default-liquid-destination.has-wormholes').length > 0, 'Has wormholes class');
   });
 });
+
+test('other liquid fire functionality can exist in a wormhole in the default destination', function(assert) {
+  visit('/scenarios/liquid-fire-in-wormhole');
+
+  andThen(() => {
+    assert.ok(find('#content-box'), 'the content box is on screen');
+    assert.equal(find('#showing-other').css('visibility'), 'visible', 'the other is visible');
+    assert.ok(!find('#not-showing-other').length, 'the not other is hidden');
+    click('button:contains(Toggle Inner Content)');
+  });
+
+  andThen(() => {
+    assert.equal(find('#not-showing-other').css('visibility'), 'visible', 'the not other is visible');
+    assert.ok(!find('#showing-other').length, 'the other is hidden');
+  });
+});
