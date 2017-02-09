@@ -14,7 +14,7 @@ the `matchSelector` helper from liquid-fire.
     Open Dialogue
   </button>
   {{#if showFirstStep}}
-    {{#liquid-wormhole stack="modal-dialog" index=1 class="modal-content top-right"}}
+    {{#liquid-wormhole stack="modal-dialog" value=1 class="modal-content top-right"}}
       <div class="modal-header">
         Step One
       </div>
@@ -26,7 +26,7 @@ the `matchSelector` helper from liquid-fire.
     {{/liquid-wormhole}}
   {{/if}}
   {{#if showSecondStep}}
-    {{#liquid-wormhole stack="modal-dialog" index=2 class="modal-content top-right"}}
+    {{#liquid-wormhole stack="modal-dialog" value=2 class="modal-content top-right"}}
       <div class="modal-header">
         Step Two
       </div>
@@ -45,13 +45,13 @@ the `matchSelector` helper from liquid-fire.
 </button>
 
 {{#if showFirstStep}}
-  {{#liquid-wormhole stack="modal-dialog" index=1}}
+  {{#liquid-wormhole stack="modal-dialog" value=1}}
     ...
   {{/liquid-wormhole}}
 {{/if}}
 
 {{#if showSecondStep}}
-  {{#liquid-wormhole stack="modal-dialog" index=2}}
+  {{#liquid-wormhole stack="modal-dialog" value=2}}
     ...
   {{/liquid-wormhole}}
 {{/if}}
@@ -67,7 +67,7 @@ this.transition(
 
 this.transition(
   this.hasClass('modal-dialog'),
-  this.toValue((toValue, fromValue) => toValue && fromValue && toValue > fromValue),
+  this.toValue((toValue, fromValue) => toValue > fromValue),
   this.use('to-right')
 );
 ```
