@@ -20,7 +20,7 @@ export default function() {
 
   this.transition(
     this.matchSelector('#modal-dialog'),
-    this.toValue((toValue, fromValue) => toValue && fromValue && toValue.index > fromValue.index),
+    this.toValue((toValue, fromValue) => toValue > fromValue),
     this.use('to-right')
   );
 

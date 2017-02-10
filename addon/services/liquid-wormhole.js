@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import HashMap from 'perf-primitives/hash-map';
-import getOwnerPolyfill from 'ember-getowner-polyfill';
 
 const { getOwner } = Ember;
 
@@ -47,7 +46,7 @@ export default Ember.Service.extend({
   },
 
   addDefaultDestination() {
-    const instance = getOwner ? getOwner(this) : getOwnerPolyfill(this);
+    const instance = getOwner(this);
     const destination = instance.lookup('component:liquid-destination');
     destination.set('classNames', ['liquid-destination', 'default-liquid-destination']);
 
@@ -56,7 +55,7 @@ export default Ember.Service.extend({
     } else if (Ember.$('.ember-application').length > 0) {
       destination.appendTo(Ember.$('.ember-application')[0]);
     } else {
-      destination.appendTo(document);      
+      destination.appendTo(document);
     }
 
     this.defaultDestination = destination;

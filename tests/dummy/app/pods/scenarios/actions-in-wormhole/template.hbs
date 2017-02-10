@@ -1,6 +1,6 @@
 {{#unless hideWormhole}}
   {{#liquid-wormhole class="blue-box"}}
-    {{#test-component someAction=(action "toggleWormhole") as |someAction|}}
+    {{#test-component action=(action "toggleWormhole") as |someAction|}}
       <button {{action someAction}}>Toggle Wormhole</button>
     {{/test-component}}
   {{/liquid-wormhole}}
