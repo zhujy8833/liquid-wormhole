@@ -13,6 +13,7 @@ export default function wormhole({ use }) {
       newChild.addClass('liquid-wormhole-temp-element');
 
       oldWormholeElement.css({ visibility: 'hidden' });
+      oldWormholeElement.find('.liquid-child').css({ visibility: 'hidden' });
 
       const offset = oldWormholeElement.offset();
 
@@ -40,6 +41,7 @@ export default function wormhole({ use }) {
       const newChild = newWormholeElement.clone();
 
       newWormholeElement.css({ visibility: 'hidden' });
+      newWormholeElement.find('.liquid-child').css({ visibility: 'hidden' });
 
       const offset = newWormholeElement.offset();
 
@@ -69,10 +71,12 @@ export default function wormhole({ use }) {
     if (this.oldElement && oldWormholeElement) {
       this.oldElement.remove()
       oldWormholeElement.css({ visibility: 'visible' });
+      oldWormholeElement.find('.liquid-child').css({ visibility: 'visible' });
     }
     if (this.newElement && newWormholeElement) {
       this.newElement.remove()
       newWormholeElement.css({ visibility: 'visible' });
+      newWormholeElement.find('.liquid-child').css({ visibility: 'visible' });
     }
   });
 };
