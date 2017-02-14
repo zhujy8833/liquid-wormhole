@@ -8,7 +8,7 @@ export default function() {
     this.hasClass('hello-world'),
     this.toValue(true),
     this.use('to-down', { duration: 400, easing: [200, 22] }),
-    this.reverse('to-up', { duration: 400, easing: [200, 22] })
+    this.reverse('to-right', { duration: 400, easing: [200, 22] })
   );
 
   this.transition(
