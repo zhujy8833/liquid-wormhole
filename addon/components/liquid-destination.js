@@ -32,6 +32,13 @@ export default Ember.Component.extend({
     this.get('liquidWormholeService').registerDestination(name, this);
   },
 
+  willDestroyElement() {
+    this._super(...arguments);
+
+    const name = this.get('name');
+    this.get('liquidWormholeService').unregisterDestination(name);
+  },
+
   appendWormhole(wormhole) {
     // The order that wormholes are rendered in may be different from the order
     // that they appear in templates, because child components get rendered before

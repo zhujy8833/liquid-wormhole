@@ -41,6 +41,10 @@ export default Ember.Service.extend({
     this.destination.set(destinationName, destination);
   },
 
+  unregisterDestination(destinationName) {
+    this.destination.delete(destinationName);
+  },
+
   willDestroy() {
     this.removeDefaultDestination();
   },
