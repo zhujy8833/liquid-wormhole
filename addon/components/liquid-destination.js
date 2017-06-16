@@ -113,7 +113,9 @@ export default Ember.Component.extend({
 
     afterTransition([{ value, view }]) {
       // If wormholes were made w/o animations, they need to be made visible manually.
-      this.$(view.element).find('.liquid-wormhole-element').css({ visibility: 'visible' });
+      if (this.$(view.element)) {
+        this.$(view.element).find('.liquid-wormhole-element').css({ visibility: 'visible' });
+      }
 
       // Clean empty stacks
       if (value === null) {
